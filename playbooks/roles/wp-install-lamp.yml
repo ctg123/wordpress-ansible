@@ -1,0 +1,15 @@
+- name: install WordPress with LAMP Stack
+  hosts: all
+  remote_user: ansible
+  become: true
+  become_user: root
+  gather_facts: true
+
+- name: Include Apache
+  import_playbook: apache.yml
+
+- name: Include MySQL
+  import_playbook: mysql.yml
+
+- name: Include WordPress
+  import_playbook: wordpress.yml
