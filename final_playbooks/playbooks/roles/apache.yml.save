@@ -1,0 +1,28 @@
+---
+- name: install apache webserver
+  remote_user: ansible
+  hosts: all
+  become: true
+  become_user: root
+  gather_facts: true
+  tasks:
+    - name: "Install apache2"
+      apt: 
+        name=apache2 state=present
+
+    - name: "Install apache2-php7"
+      apt: 
+        name=libapache2-mod-php7.4 state=present
+
+    - name: Enable mod rewrite
+      apache2_module: name=rewrite state=present      # notify: restart apache
+
+    - name: Enable the use of .htaccess file in the project. 
+      copy: 
+       src: enable_htaccess.conf
+       dest: /etc/apache2/sites-available/enable_htaccess.conf
+     # notify: restart apache
+
+ # handlers: 
+ #   - name: Restart apache
+ #     services: name=apache2 state=restarted
