@@ -7,11 +7,13 @@
   vars:
     MySQL_root_pass: admin123!
   tasks:
-    - name: Set MySQL root password before installing
+    - name: Set MySQL root password before installing.
       debconf: name="mysql-server" question="mysql-server/root_password" value="" vtype="password"
-    - name: Confirm MySQL root password before installing
+
+    - name: Confirm MySQL root password before installing.
       debconf: name="mysql-server" question="mysql-server/root_password_again" value="" vtype="password"
-    - name: test1
+
+    - name: Add test database for MySQL
       apt:
         package:
             - mysql-server
@@ -22,8 +24,10 @@
         update_cache: yes
         cache_valid_time: 3600
       when: ansible_os_family == "Debian"
+
     - name: Deletes anonymous MySQL server user for localhost
       mysql_user: user="" state="absent" login_password="" login_user=root
+
     - name: Secures the MySQL root user
       mysql_user: user="root" password="" host="{{item}}" login_password="" login_user=root
       with_items:
@@ -31,6 +35,7 @@
         - localhost
         - ::1
         - ""
+
     - name: Removes the MySQL test database
       mysql_db: db=test state=absent login_password="" login_user=root
 
