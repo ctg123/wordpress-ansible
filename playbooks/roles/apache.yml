@@ -1,33 +1,27 @@
-- name: install apache & php
-  remote_user: ansible
+---
+- name: install apache webserver
+  remote_user: admin
   hosts: all
   become: true
   become_user: root
   gather_facts: true
   tasks:
     - name: "Install apache2"
-      package: name=apache2 state=present
-    - name: "Install apache2-php5"
-      package: name=libapache2-mod-php state=present
-    - name: "Install php-cli"
-      package: name=php-cli state=present
-    - name: "Install php-mcrypt"
-      package: name=php-mcrypt state=present
-    - name: "Install php-gd"
-      package: name=php-gd state=present
-    - name: Install php-fpm
-      package: name=php-fpm state=present
-    - name: Install php-common
-      package: name=php-common state=present
-    - name: Install php-mbstring
-      package: name=php-mbstring state=present
-    - name: Install php-xmlrpc
-      package: name=php-xmlrpc state=present
-    - name: Install php-xml
-      package: name=php-xml state=present
-    - name: Install php-mysql
-      package: name=php-mysql state=present
-    - name: Install php zip
-      package: name=php-zip state=present
-    - name: Install php-curl
-      package: name=php-curl state=present
+      apt: 
+        name: apache2 
+        state: present
+
+    - name: Enable mod rewrite
+      apache2_module: 
+        name: rewrite 
+        state: present
+      
+    - name: Enable the use of .htaccess file in the project. 
+      copy: 
+       src: enable_htaccess.conf
+       dest: /etc/apache2/sites-available/enable_htaccess.conf
+     
+    - name: "Restart Apache"
+      service: 
+        name: apache2 
+        state: restarted
