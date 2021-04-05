@@ -30,9 +30,9 @@ nano vars/default.yml
 ```yml
 #vars/default.yml
 ---
-create_user: sammy
+create_user: admin
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-sys_packages: [ 'curl', 'vim', 'git', 'ufw']
+sys_packages: [ 'curl', 'vim', 'git', 'tree', 'ufw']
 ```
 
 ### 3. Run the Playbook
