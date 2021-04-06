@@ -1,6 +1,6 @@
-#################################################
-# DO Community Playbooks: Initial Server Setup
-#################################################
+################################################
+# SSH and Admin user setup with Setup playbook #
+################################################
 ---
 - hosts: all
   become: true
@@ -8,14 +8,19 @@
     - vars/default.yml
 
   tasks:
-    - name: Install Prerequisites
+    - name: Update apt cache if needed
       apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+      tags: [ system ]
+      
+####################
+# Sudo Group Setup #
+####################
 
-# Sudo Group Setup
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
         state: present
+      tags: [ ssh ]  
 
     - name: Allow 'wheel' group to have passwordless sudo
       lineinfile:
@@ -24,8 +29,12 @@
         regexp: '^%wheel'
         line: '%wheel ALL=(ALL) NOPASSWD: ALL'
         validate: '/usr/sbin/visudo -cf %s'
+      tags: [ ssh ]  
+      
+####################
+# User + Key Setup #
+####################
 
-# User + Key Setup
     - name: Create a new regular user with sudo privileges
       user:
         name: "{{ create_user }}"
@@ -34,12 +43,14 @@
         append: true
         create_home: true
         shell: /bin/bash
+      tags: [ ssh ]   
 
     - name: Set authorized key for remote user
       authorized_key:
         user: "{{ create_user }}"
         state: present
         key: "{{ copy_local_key }}"
+      tags: [ ssh ]  
 
     - name: Disable password authentication for root
       lineinfile:
@@ -47,22 +58,33 @@
         state: present
         regexp: '^#?PermitRootLogin'
         line: 'PermitRootLogin prohibit-password'
+      tags: [ ssh ]  
 
-# Install Packages
+####################
+# Install Packages #
+####################
+
     - name: Update apt
       apt: update_cache=yes
+      tags: [ system ]
 
     - name: Install required system packages
       apt: name={{ sys_packages }} state=latest
+      tags: [ system ]
+      
+#############
+# UFW Setup #
+#############
 
-# UFW Setup
     - name: UFW - Allow SSH connections
       ufw:
         rule: allow
         name: OpenSSH
+      tags: [ system ]
 
     - name: UFW - Deny all other incoming traffic by default
       ufw:
         state: enabled
         policy: deny
         direction: incoming
+      tags: [ system ]  
