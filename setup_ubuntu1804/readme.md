@@ -1,27 +1,24 @@
-# Initial Server Setup on Ubuntu 18.04
+# SSH and Admin user setup with Setup playbook
 
-This playbook will execute a initial server setup for Ubuntu 18.04 systems, as explained in the guide on
-[Initial Server Setup Guide for Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-automate-initial-server-setup-on-ubuntu-18-04).
-A number of containers will be created with the options specified in the `vars/default.yml` variable file.
+The `setup_ubuntu1804` folder in the Github repository runs an independent playbook that will execute an initial server setup for the managed nodes. The options stores in the `vars/default.yml` variable file. We define the following settings below:
 
 ## Settings
 
-- `create_user`: the name of the remote sudo user to create.
-- `copy_local_key`: path to a local SSH public key that will be copied as authorized key for the new user. By default, it copies the key from the current system user running Ansible.
-- `sys_packages`: array with list of packages that should be installed.
+- `create_user`: The name of the remote sudo user to create. In our case, it will be admin.
+- `copy_local_key`: Path to a local SSH public key that will be copied as authorized key for the new user. By default, it copies the key from the current system user running Ansible.
+- `sys_packages`: An array with a list fundamental packages to be installed. 
 
 
 ## Running this Playbook
 
 Quick Steps:
 
-### 1. Obtain the playbook
+### 1. Navigate to the playbook
 ```shell
-git clone https://github.com/do-community/ansible-playbooks.git
-cd ansible-playbooks/setup_ubuntu1804
+admin@ansible-master:~/wordpress-ansible$ cd setup_ubuntu1804/
 ```
 
-### 2. Customize Options
+### 1. Customize Options
 
 ```shell
 nano vars/default.yml
@@ -38,7 +35,47 @@ sys_packages: [ 'curl', 'vim', 'git', 'tree', 'ufw']
 ### 3. Run the Playbook
 
 ```command
-ansible-playbook -l [target] -i [inventory file] -u [remote user] playbook.yml
+admin@ansible-master:~/.../setup_ubuntu1804$ ansible-playbook -i inventory -u admin playbook.yml
 ```
 
-For more information on how to run this Ansible setup, please check this guide: [Initial Server Setup Guide for Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-automate-initial-server-setup-on-ubuntu-18-04).
+Once the Playbook completes as successful, you can test the SSH connection with the following Ansible commands for our inventory with `ansible all -i inventory -m ping` and `ansible-inventory -i inventory --list`.
+
+```shell
+admin@ansible-master:~/.../setup_ubuntu1804$ ansible all -i inventory -m ping
+ansible-node2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+ansible-node1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+admin@ansible-master:~/.../wordpress-lamp_ubuntu1804$ ansible-inventory -i inventory --list
+{
+    "_meta": {
+        "hostvars": {
+            "ansible-node1": {
+                "ansible_host": "10.23.45.20",
+                "ansible_python_interpreter": "/usr/bin/python3"
+            },
+            "ansible-node2": {
+                "ansible_host": "10.23.45.30",
+                "ansible_python_interpreter": "/usr/bin/python3"
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "servers",
+            "ungrouped"
+        ]
+    },
+    "servers": {
+        "hosts": [
+            "ansible-node1",
+            "ansible-node2"
+        ]
+    }
+}
+```
