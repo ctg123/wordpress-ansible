@@ -50,8 +50,6 @@ nano vars/default.yml
 ```yml
 ---
 #System Settings
----
-#System Settings
 php_modules: [ 'php7.4-curl', 'php7.4-cli', 'php7.4-dev', 'php7.4-gd', 'php7.4-mbstring', 'php7.4-mcrypt', 'php7.4-json', 'php7.4-tidy', 'php7.4-opcache', 'php
 7.4-xml', 'php7.4-xmlrpc', 'php7.4-pdo', 'php7.4-soap', 'php7.4-intl', 'php7.4-zip' ]
 
