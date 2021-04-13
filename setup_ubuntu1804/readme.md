@@ -18,7 +18,7 @@ Quick Steps:
 admin@ansible-master:~/wordpress-ansible$ cd setup_ubuntu1804/
 ```
 
-### 1. Customize Options
+### 2. Customize Options
 
 ```shell
 nano vars/default.yml
