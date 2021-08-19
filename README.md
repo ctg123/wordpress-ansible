@@ -5,3 +5,5 @@ This Playbook will install a WordPress Content Management System (CMS) on top of
 - **Apache2** - The Apache HTTP server is the most widely-used web server in the world. It provides many powerful features, including dynamically loadable modules, robust media support, and extensive integration with other popular software.
 - **MySQL 5.7** - MySQL is the world’s most popular open-source relational database management system.
 - **PHP 7.4** - PHP is a popular general-purpose scripting language that is especially suited to web development.
+
+You can find more details about how the project works at my website: https://www.chaancegraves.com/project/wordpress-with-lamp-stack/
